@@ -1,2 +1,8 @@
-# advent-of-code-2025
-My solutions to advent of code 2025, as well as my rtl solutions for advent of fpga/hardcaml.
+# Repository Overview
+
+# Structure
+## Advent of Code Solutions
+## Advent of FPGA Solutions (Verilog)
+## Advent of HardCaml Solutions (Hardcaml)
+
+# Use
