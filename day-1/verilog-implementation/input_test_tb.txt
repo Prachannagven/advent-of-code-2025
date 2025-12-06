@@ -1,0 +1,12 @@
+Now printing testbench input sequence: 
+@(posedge clk); dir_r = 0; data_in = 68;
+@(posedge clk); dir_r = 0; data_in = 30;
+@(posedge clk); dir_r = 1; data_in = 48;
+@(posedge clk); dir_r = 0; data_in = 5;
+@(posedge clk); dir_r = 1; data_in = 60;
+@(posedge clk); dir_r = 0; data_in = 55;
+@(posedge clk); dir_r = 0; data_in = 1;
+@(posedge clk); dir_r = 0; data_in = 99;
+@(posedge clk); dir_r = 1; data_in = 14;
+@(posedge clk); dir_r = 0; data_in = 82;
+End of testbench input sequence.

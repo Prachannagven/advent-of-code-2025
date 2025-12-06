@@ -1,50 +1,39 @@
-`timescale 1ns/1ps
+`timescale 1ns / 1ps
 
-module zero_counter_tb;
+module aoc_day1_tb();
 
-    // DUT inputs
-    reg  [31:0] data_in;
-    reg         dir_r;
-    reg         clk;
-    reg         rst;
+    //Insantiating the module
+    reg [31:0] data_in = 32'b0;
+    reg clk = 1'b0;
+    reg rst = 1'b0;
+    reg dir_r = 1'b0;
+    wire [31:0] zero_count;
 
-    // DUT output
-    wire [15:0] zero_count;
-    wire [15:0] zero_cross;
-
-    // Instantiate DUT
-    zero_counter dut (
-        .data_in(data_in),
-        .dir_r(dir_r),
+    aoc_day1 uut(
+        .in_data(data_in),
         .clk(clk),
         .rst(rst),
-        .zero_count(zero_count),
-        .zero_cross(zero_cross)
+        .dir_r(dir_r),
+        .zero_count(zero_count)
     );
 
-    // Clock: 10ns period = 100MHz
-    always #5 clk = ~clk;
+    //Clock generation
+    initial clk = 0;
+    always #5 clk = ~clk; // 10 time units clock period
 
-    // MAIN TEST
     initial begin
-        // VCD dump for waveforms
-        $dumpfile("zero_counter.vcd");
-        $dumpvars(0, zero_counter_tb);
-
-        $display("=== ZERO COUNTER TESTBENCH START ===");
-
-        // Initialize signals
-        clk     = 0;
-        rst     = 0;
-        data_in = 0;
-        dir_r   = 0;
-
-        // Reset pulse
+        $dumpfile("aoc_day1_test.vcd");
+        $dumpvars(0, aoc_day1_tb);
+        
+        @(posedge clk)
         rst = 1;
-        #20;
+        data_in = 32'b0;
+        dir_r = 1'b0;
+
+        @(posedge clk)
         rst = 0;
 
-        // === BEGIN INPUT SEQUENCE ===
+        //Now the actual data
         @(posedge clk); dir_r = 0; data_in = 68;
         @(posedge clk); dir_r = 0; data_in = 30;
         @(posedge clk); dir_r = 1; data_in = 48;
@@ -55,16 +44,12 @@ module zero_counter_tb;
         @(posedge clk); dir_r = 0; data_in = 99;
         @(posedge clk); dir_r = 1; data_in = 14;
         @(posedge clk); dir_r = 0; data_in = 82;
-        // === END INPUT SEQUENCE ===
 
-        // Print final result
-        #20;
-        $display("=== TEST COMPLETE ===");
-        $display("Final zero_count = %d", zero_count);
-        $display("Final zero_cros = %d", zero_cross);
+        //Ending the simulation
+        repeat(3) @(posedge clk);
+        $display("Simulation Ended. Final Zero Count = %0d", zero_count);
 
         $finish;
     end
 
 endmodule
-
