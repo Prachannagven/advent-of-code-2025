@@ -1,152 +1,165 @@
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
-#define MAX_LINE_LENGTH 2048 
-#define MAX_PROBLEMS 2048
-#define NUM_LINES 5
-
-static void rtrim(char *s) {
-    int L = strlen(s);
-    while (L > 0 && (s[L-1] == '\n' || s[L-1] == '\r')) { s[--L] = '\0'; }
+static char *trim_copy(const char *s, size_t start, size_t end) {
+    while (start < end && isspace((unsigned char)s[start])) start++;
+    while (end > start && isspace((unsigned char)s[end-1])) end--;
+    size_t len = end - start;
+    char *out = malloc(len + 1);
+    if (!out) { perror("malloc"); exit(1); }
+    memcpy(out, s + start, len);
+    out[len] = '\0';
+    return out;
 }
 
-static void trim(char *s) {
-    // trim both ends in-place
-    char *p = s;
-    while (*p && isspace((unsigned char)*p)) p++;
-    if (p != s) memmove(s, p, strlen(p) + 1);
-    size_t L = strlen(s);
-    while (L > 0 && isspace((unsigned char)s[L-1])) s[--L] = '\0';
+static long parse_long_or_die(const char *s) {
+    char *end;
+    long v = strtol(s, &end, 10);
+    if (end == s) {
+        fprintf(stderr, "Failed to parse integer from \"%s\"\n", s);
+        exit(1);
+    }
+    return v;
 }
 
 int main(int argc, char **argv) {
     if (argc != 2) {
         fprintf(stderr, "Usage: %s <worksheet-file>\n", argv[0]);
-        return 2;
+        return 1;
     }
 
     FILE *fp = fopen(argv[1], "r");
-    if (!fp) { perror("fopen"); return 3; }
+    if (!fp) { perror("fopen"); return 1; }
 
-    char lines[NUM_LINES][MAX_LINE_LENGTH];
-    int i;
-    for (i = 0; i < NUM_LINES; ++i) {
-        if (!fgets(lines[i], sizeof(lines[i]), fp)) {
-            fprintf(stderr, "Invalid file: expected %d lines for a single worksheet block\n", NUM_LINES);
-            fclose(fp);
-            return 4;
+    /* Read all lines into a dynamic array */
+    char *line = NULL;
+    size_t cap = 0;
+    ssize_t n;
+    char **lines = NULL;
+    size_t lines_count = 0, lines_cap = 0;
+    while ((n = getline(&line, &cap, fp)) != -1) {
+        /* remove trailing newline */
+        if (n > 0 && line[n-1] == '\n') { line[n-1] = '\0'; n--; }
+        if (lines_count + 1 > lines_cap) {
+            size_t nc = lines_cap ? lines_cap * 2 : 64;
+            char **tmp = realloc(lines, nc * sizeof(char*));
+            if (!tmp) { perror("realloc"); return 1; }
+            lines = tmp; lines_cap = nc;
         }
-        rtrim(lines[i]);
+        lines[lines_count++] = strdup(line);
     }
+    free(line);
     fclose(fp);
 
-    // find maximum length and pad lines with spaces
-    int maxlen = 0;
-    for (i = 0; i < NUM_LINES; ++i) {
-        int L = (int)strlen(lines[i]);
-        if (L > maxlen) maxlen = L;
+    if (lines_count == 0) {
+        fprintf(stderr, "Empty file\n");
+        return 1;
     }
-    // pad with spaces so all lines are same length
-    for (i = 0; i < NUM_LINES; ++i) {
-        int L = (int)strlen(lines[i]);
-        if (L < maxlen) {
-            memset(lines[i] + L, ' ', maxlen - L);
-            lines[i][maxlen] = '\0';
-        }
+    if (lines_count % 5 != 0) {
+        fprintf(stderr, "Warning: number of lines (%zu) is not a multiple of 5. "
+                        "Processing as many full 5-line blocks as possible.\n", lines_count);
     }
 
-    // Identify contiguous column blocks that contain at least one non-space
-    // in the top NUM_LINES rows (i.e., columns that belong to a problem).
-    int start = -1;
-    int nblocks = 0;
-    int block_start[MAX_PROBLEMS];
-    int block_end[MAX_PROBLEMS]; // inclusive
+    long long grand_total = 0;
 
-    for (int col = 0; col < maxlen; ++col) {
-        int col_all_space = 1;
-        for (i = 0; i < NUM_LINES; ++i) {
-            if (lines[i][col] != ' ') { col_all_space = 0; break; }
-        }
-        if (!col_all_space) {
-            if (start == -1) start = col;
-        } else {
-            if (start != -1) {
-                if (nblocks >= MAX_PROBLEMS) {
-                    fprintf(stderr, "Too many problems (>%d)\n", MAX_PROBLEMS);
-                    return 5;
-                }
-                block_start[nblocks] = start;
-                block_end[nblocks] = col - 1;
-                nblocks++;
-                start = -1;
+    /* Process every 5-line block */
+    for (size_t base = 0; base + 4 < lines_count; base += 5) {
+        char *r0 = lines[base + 0];
+        char *r1 = lines[base + 1];
+        char *r2 = lines[base + 2];
+        char *r3 = lines[base + 3];
+        char *r4 = lines[base + 4];
+
+        /* find max width */
+        size_t w0 = strlen(r0), w1 = strlen(r1), w2 = strlen(r2), w3 = strlen(r3), w4 = strlen(r4);
+        size_t width = w0;
+        if (w1 > width) width = w1;
+        if (w2 > width) width = w2;
+        if (w3 > width) width = w3;
+        if (w4 > width) width = w4;
+
+        /* pad shorter lines conceptually (we just check bounds) */
+
+        /* A column is "empty" if every row has a space (or it's past end) at that column */
+        size_t col = 0;
+        while (col < width) {
+            /* skip empty separator columns */
+            int all_space = 1;
+            for (int r = 0; r < 5; r++) {
+                char *row = lines[base + r];
+                if (col < strlen(row) && !isspace((unsigned char)row[col])) { all_space = 0; break; }
             }
-        }
-    }
-    if (start != -1) { // trailing block
-        if (nblocks >= MAX_PROBLEMS) {
-            fprintf(stderr, "Too many problems (>%d)\n", MAX_PROBLEMS);
-            return 5;
-        }
-        block_start[nblocks] = start;
-        block_end[nblocks] = maxlen - 1;
-        nblocks++;
-    }
+            if (all_space) { col++; continue; }
 
-    long grand_total = 0;
+            /* found start of a problem segment: find end */
+            size_t start = col;
+            size_t end = start;
+            while (end < width) {
+                int col_all_space = 1;
+                for (int r = 0; r < 5; r++) {
+                    char *row = lines[base + r];
+                    if (end < strlen(row) && !isspace((unsigned char)row[end])) { col_all_space = 0; break; }
+                }
+                if (col_all_space) break;
+                end++;
+            }
 
-    // For each block: parse the up-to-4 numbers from the first 4 lines, using the substring of the block
-    for (int b = 0; b < nblocks; ++b) {
-        int s = block_start[b];
-        int e = block_end[b];
+            /* extract substrings for each of the first 4 rows */
+            char *s0 = trim_copy(r0, start, end);
+            char *s1 = trim_copy(r1, start, end);
+            char *s2 = trim_copy(r2, start, end);
+            char *s3 = trim_copy(r3, start, end);
+            char *sop = trim_copy(r4, start, end);
 
-        // Extract operator from last (5th) line's substring
-        char opbuf[MAX_LINE_LENGTH];
-        int op_len = e - s + 1;
-        if (op_len >= (int)sizeof(opbuf)) op_len = (int)sizeof(opbuf) - 1;
-        memcpy(opbuf, lines[4] + s, op_len);
-        opbuf[op_len] = '\0';
-        trim(opbuf);
-        if (strlen(opbuf) == 0) {
-            // No operator found (shouldn't happen), skip
-            continue;
-        }
-        char op = opbuf[0]; // '+' or '*'
+            /* parse numbers (skip empty strings) */
+            long vals[4];
+            int val_count = 0;
+            if (s0[0] != '\0') vals[val_count++] = parse_long_or_die(s0);
+            if (s1[0] != '\0') vals[val_count++] = parse_long_or_die(s1);
+            if (s2[0] != '\0') vals[val_count++] = parse_long_or_die(s2);
+            if (s3[0] != '\0') vals[val_count++] = parse_long_or_die(s3);
 
-        long values[NUM_LINES-1];
-        int vcount = 0;
-        for (i = 0; i < NUM_LINES-1; ++i) {
-            char buf[MAX_LINE_LENGTH];
-            int seglen = e - s + 1;
-            if (seglen >= (int)sizeof(buf)) seglen = (int)sizeof(buf) - 1;
-            memcpy(buf, lines[i] + s, seglen);
-            buf[seglen] = '\0';
-            trim(buf);
-            if (strlen(buf) == 0) continue; // maybe fewer numbers in some rows
-            // parse integer (allow leading/trailing spaces)
-            long val = strtol(buf, NULL, 10);
-            values[vcount++] = val;
-        }
+            if (val_count == 0) {
+                /* nothing in this segment (shouldn't happen) */
+                free(s0); free(s1); free(s2); free(s3); free(sop);
+                col = end;
+                continue;
+            }
 
-        if (vcount == 0) continue; // nothing to do
+            /* find operator: first '+' or '*' in sop */
+            char op = 0;
+            for (size_t k = 0; sop[k] != '\0'; k++) {
+                if (sop[k] == '+' || sop[k] == '*') { op = sop[k]; break; }
+            }
+            if (!op) {
+                /* default to + if not found (but ideally input has + or *) */
+                op = '+';
+            }
 
-        long ans;
-        if (op == '+') {
-            ans = 0;
-            for (int k = 0; k < vcount; ++k) ans += values[k];
-        } else if (op == '*') {
-            ans = 1;
-            for (int k = 0; k < vcount; ++k) ans *= values[k];
-        } else {
-            // unknown operator; skip
-            continue;
-        }
+            long long problem_result;
+            if (op == '+') {
+                problem_result = 0;
+                for (int i = 0; i < val_count; i++) problem_result += vals[i];
+            } else {
+                problem_result = 1;
+                for (int i = 0; i < val_count; i++) problem_result *= vals[i];
+            }
 
-        grand_total += ans;
-    }
+            grand_total += problem_result;
 
-    printf("%ld\n", grand_total);
+            free(s0); free(s1); free(s2); free(s3); free(sop);
+
+            col = end;
+        } /* while col < width */
+    } /* block loop */
+
+    printf("%lld\n", grand_total);
+
+    for (size_t i = 0; i < lines_count; i++) free(lines[i]);
+    free(lines);
     return 0;
 }
 

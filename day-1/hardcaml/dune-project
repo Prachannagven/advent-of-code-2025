@@ -1,0 +1,4 @@
+(lang dune 3.9)
+(name mod100_hardcaml)
+(generate_opam_files true)
+

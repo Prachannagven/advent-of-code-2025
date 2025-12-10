@@ -10,3 +10,17 @@ Most of the logic remains the same as that of the C program, but with a few chan
 ## FIFO Module
 ## Main Core
 ## Top Level Wrapper
+
+# Folders
+The challenge was implemented in three languages:
+- C
+- Verilog
+- Hardcaml
+
+The C implementation can be found in folders "part-1" and "part-2". 
+The Verilog implementation can be found in folder "verilog".
+The Hardcaml implementation can be found in folder "hardcaml".
+
+Verilog and Hardcaml have their own READMEs, so it may be worthwile to take a look at those for more information on the hardware implemenations.
+
+
