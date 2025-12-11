@@ -37,16 +37,16 @@ The sample is useful for opening up in gtkwave for debugging purposes. Since the
 # Conversion from input to testbench
 The testbench used a simple line to convert actually send in the data, shown below:
 ``` Verilog
-        @(posedge clk); dir_r = 0; data_in = 68;
-        @(posedge clk); dir_r = 0; data_in = 30;
-        @(posedge clk); dir_r = 1; data_in = 48;
-        @(posedge clk); dir_r = 0; data_in = 5;
-        @(posedge clk); dir_r = 1; data_in = 60;
-        @(posedge clk); dir_r = 0; data_in = 55;
-        @(posedge clk); dir_r = 0; data_in = 1;
-        @(posedge clk); dir_r = 0; data_in = 99;
-        @(posedge clk); dir_r = 1; data_in = 14;
-        @(posedge clk); dir_r = 0; data_in = 82;
+@(posedge clk); dir_r = 0; data_in = 68;
+@(posedge clk); dir_r = 0; data_in = 30;
+@(posedge clk); dir_r = 1; data_in = 48;
+@(posedge clk); dir_r = 0; data_in = 5;
+@(posedge clk); dir_r = 1; data_in = 60;
+@(posedge clk); dir_r = 0; data_in = 55;
+@(posedge clk); dir_r = 0; data_in = 1;
+@(posedge clk); dir_r = 0; data_in = 99;
+@(posedge clk); dir_r = 1; data_in = 14;
+@(posedge clk); dir_r = 0; data_in = 82;
 ```
 
 Which simply contains the direction right or left as well as the data input in decimal format. To generate these lines, I wrote a simple C script that scrapes the input file and generates these lines.

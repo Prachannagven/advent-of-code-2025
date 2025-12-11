@@ -4,10 +4,10 @@ module aoc_day1_part1(
     input  wire        rst,
     input  wire        dir_r,
     output reg  [31:0] zero_count,
-    output reg  [7:0]  curr_pos_op,
-    output reg         busy
+    output reg  [7:0]  curr_pos_op
 );
 
+    //Instantiate the mod100 module that I built seperately
     wire [7:0] rot_by;
     wire [1:0] test;
 
@@ -18,13 +18,19 @@ module aoc_day1_part1(
         .rot_by(rot_by)
     );
 
+    //To make this work, we need the current and next for arithmatic.
+    //The next will then be assigned out to the output
     reg [7:0] curr_pos = 8'd50;
     reg [7:0] next_pos;
-    reg [4:0] dir_r_reg;
+    reg [3:0] dir_r_reg;
 
-    //Register to store the dir_r values so they can be used at the
-    //appropriate times
+    reg [31:0] test_reg;
+
+    //Latency of 4 clock cycles exists because of the mod100 pipeline.
+    //Dir_r needs to be delayed the same amount to line up correctly.
     always @(posedge clk or posedge rst) begin
+        test_reg <= in_data;
+
         if (rst) begin
             dir_r_reg <= 5'b0;
         end
@@ -33,9 +39,9 @@ module aoc_day1_part1(
         end
     end
 
+    //Next state logic using comb because it's easier.
     always @(*) begin
-        // pure combinational next-state logic
-        if (dir_r_reg[4]) 
+        if (dir_r_reg[3]) 
             next_pos = curr_pos + rot_by;
         else
             next_pos = curr_pos + (8'd100 - rot_by);
@@ -44,18 +50,17 @@ module aoc_day1_part1(
             next_pos = next_pos - 8'd100;
     end
 
+    //Tadaaa, the final sequential block to update state.
     always @(posedge clk or posedge rst) begin
         if (rst) begin
             curr_pos    <= 8'd50;
             zero_count  <= 0;
             curr_pos_op <= 8'd50;
-            busy        <= 0;
         end
         else begin
             curr_pos    <= next_pos;
             curr_pos_op <= next_pos;
             zero_count  <= (next_pos == 0) ? zero_count + 1 : zero_count;
-            busy        <= 1'b1;
         end
     end
 

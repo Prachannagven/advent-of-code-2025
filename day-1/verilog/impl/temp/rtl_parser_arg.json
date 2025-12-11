@@ -2,6 +2,10 @@
  "Device" : "GW1NR-9C",
  "Files" : [
   {
+   "Path" : "/home/pranav/Documents/advent-of-code-2025/day-1/verilog/src/hardware_wrapper.v",
+   "Type" : "verilog"
+  },
+  {
    "Path" : "/home/pranav/Documents/advent-of-code-2025/day-1/verilog/src/mod100_pipelined.v",
    "Type" : "verilog"
   },

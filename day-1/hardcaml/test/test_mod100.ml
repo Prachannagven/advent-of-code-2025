@@ -4,10 +4,10 @@ open! Hardcaml
 open! Hardcaml_waveterm
 open! Hardcaml_test_harness
 
-(* IMPORTANT: This refers to the library namespace from src/dune (name mod100_hardcaml).
-   The module file src/mod100.ml becomes Mod100 inside the mod100_hardcaml library.
+(* IMPORTANT: This refers to the library namespace from src/dune (name aoc_day1_part1).
+   The module file src/mod100.ml becomes Mod100 inside the aoc_day1_part1 library.
 *)
-module Mod100 = Mod100_hardcaml.Mod100
+module Mod100 = Aoc_day1_part1.Mod100
 
 module Harness = Cyclesim_harness.Make (Mod100.I) (Mod100.O)
 

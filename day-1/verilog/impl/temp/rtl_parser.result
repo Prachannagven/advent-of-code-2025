@@ -1,19 +1,29 @@
 [
  {
-  "InstFile" : "/home/pranav/Documents/advent-of-code-2025/day-1/verilog/src/sol.v",
+  "InstFile" : "/home/pranav/Documents/advent-of-code-2025/day-1/verilog/src/hardware_wrapper.v",
   "InstLine" : 1,
-  "InstName" : "aoc_day1_part1",
-  "ModuleFile" : "/home/pranav/Documents/advent-of-code-2025/day-1/verilog/src/sol.v",
+  "InstName" : "hardware_wrapper",
+  "ModuleFile" : "/home/pranav/Documents/advent-of-code-2025/day-1/verilog/src/hardware_wrapper.v",
   "ModuleLine" : 1,
-  "ModuleName" : "aoc_day1_part1",
+  "ModuleName" : "hardware_wrapper",
   "SubInsts" : [
    {
-    "InstFile" : "/home/pranav/Documents/advent-of-code-2025/day-1/verilog/src/sol.v",
-    "InstLine" : 14,
-    "InstName" : "mod_unit",
-    "ModuleFile" : "/home/pranav/Documents/advent-of-code-2025/day-1/verilog/src/mod100_pipelined.v",
+    "InstFile" : "/home/pranav/Documents/advent-of-code-2025/day-1/verilog/src/hardware_wrapper.v",
+    "InstLine" : 43,
+    "InstName" : "top_module",
+    "ModuleFile" : "/home/pranav/Documents/advent-of-code-2025/day-1/verilog/src/sol.v",
     "ModuleLine" : 1,
-    "ModuleName" : "mod100_pipelined"
+    "ModuleName" : "aoc_day1_part1",
+    "SubInsts" : [
+     {
+      "InstFile" : "/home/pranav/Documents/advent-of-code-2025/day-1/verilog/src/sol.v",
+      "InstLine" : 14,
+      "InstName" : "mod_unit",
+      "ModuleFile" : "/home/pranav/Documents/advent-of-code-2025/day-1/verilog/src/mod100_pipelined.v",
+      "ModuleLine" : 1,
+      "ModuleName" : "mod100_pipelined"
+     }
+    ]
    }
   ]
  }

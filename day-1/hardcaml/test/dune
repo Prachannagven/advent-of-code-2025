@@ -1,7 +1,7 @@
 (library
  (name test_mod100)
  (libraries
-  mod100_hardcaml
+  aoc_day1_part1
   hardcaml
   re
   hardcaml_waveterm

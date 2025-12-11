@@ -1,6 +1,6 @@
 (library
- (name mod100_hardcaml)         ; library namespace
- (public_name mod100_hardcaml)  ; optional: for opam packaging
+ (name aoc_day1_part1)         ; library namespace
+ (public_name aoc_day1_part1)  ; optional: for opam packaging
  (libraries hardcaml)
  (preprocess 
    (pps ppx_hardcaml ppx_jane)
