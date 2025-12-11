@@ -1,4 +1,4 @@
-module aoc_day1(
+module aoc_day1_part1(
     input  wire [31:0] in_data,
     input  wire        clk,
     input  wire        rst,
@@ -8,7 +8,8 @@ module aoc_day1(
     output reg         busy
 );
 
-    wire [7:0] rot_by;  // modulo result after 4 cycles
+    wire [7:0] rot_by;
+    wire [1:0] test;
 
     mod100_pipelined mod_unit (
         .clk(clk),
@@ -17,71 +18,46 @@ module aoc_day1(
         .rot_by(rot_by)
     );
 
-    reg [7:0]  curr_pos = 8'd50;
-    reg [31:0] zero_count_int;
+    reg [7:0] curr_pos = 8'd50;
+    reg [7:0] next_pos;
+    reg [4:0] dir_r_reg;
 
-    // local combinational next state
-    reg [9:0] temp_pos_next = 8'd50;
-    reg [7:0] curr_pos_next = 8'd50;
-
-    //States
-    reg [1:0] state;
-    localparam IDLE1 = 2'b00;
-    localparam IDLE2 = 2'b00;
-    localparam IDLE3 = 2'b00;
-    localparam WORKI = 2'b00;
-
-    //Making a small FIFO to delay the dir_r operation
-    reg [3:0] dir_r_fifo = 4'b0000;
+    //Register to store the dir_r values so they can be used at the
+    //appropriate times
     always @(posedge clk or posedge rst) begin
         if (rst) begin
-            dir_r_fifo <= 4'b0000;
+            dir_r_reg <= 5'b0;
         end
         else begin
-            dir_r_fifo <= {dir_r_fifo[2:0], dir_r};
+            dir_r_reg <= {dir_r_reg[3:0], dir_r};
         end
     end
 
-    always @(posedge clk or posedge rst) begin
-        if(rst) begin
-            busy <= 1'b0;
-            curr_pos       <= 8'd50;
-            zero_count_int <= 0;
-            zero_count     <= 0;
-        end
-        else begin
-            dir_r_use <= dir_r_fifo[3];
-            busy <= 1'b1;
-            if (dir_r_use) begin
-                temp_pos_next = curr_pos + rot_by;
-                if (temp_pos_next >= 10'd100)
-                    curr_pos_next = temp_pos_next - 10'd100;
-                else
-                    curr_pos_next = temp_pos_next[7:0];
-            end else begin
-                temp_pos_next = curr_pos + (8'd100 - rot_by);
-                if (temp_pos_next >= 10'd100)
-                    curr_pos_next = temp_pos_next - 10'd100;
-                else
-                    curr_pos_next = temp_pos_next[7:0];
-            end
-        end
-    end
+    always @(*) begin
+        // pure combinational next-state logic
+        if (dir_r_reg[4]) 
+            next_pos = curr_pos + rot_by;
+        else
+            next_pos = curr_pos + (8'd100 - rot_by);
 
+        if (next_pos >= 8'd100)
+            next_pos = next_pos - 8'd100;
+    end
 
     always @(posedge clk or posedge rst) begin
         if (rst) begin
-            curr_pos <= 8'd50;
+            curr_pos    <= 8'd50;
+            zero_count  <= 0;
             curr_pos_op <= 8'd50;
+            busy        <= 0;
         end
         else begin
-            curr_pos <= curr_pos_next;
-            curr_pos_op <= curr_pos_next;
-            if (curr_pos_next == 0) begin
-                zero_count_int <= zero_count_int + 1;
-                zero_count <= zero_count_int;
-            end
+            curr_pos    <= next_pos;
+            curr_pos_op <= next_pos;
+            zero_count  <= (next_pos == 0) ? zero_count + 1 : zero_count;
+            busy        <= 1'b1;
         end
     end
 
 endmodule
+

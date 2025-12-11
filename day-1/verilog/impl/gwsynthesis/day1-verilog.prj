@@ -4,14 +4,14 @@
     <Version>beta</Version>
     <Device id="GW1NR-9C" package="QFN88P" speed="6" partNumber="GW1NR-LV9QN88PC6/I5"/>
     <FileList>
-        <File path="/home/pranav/Documents/advent-of-code-2025/day-1/day1-verilog/src/mod100_pipelined.v" type="verilog"/>
-        <File path="/home/pranav/Documents/advent-of-code-2025/day-1/day1-verilog/src/sol.v" type="verilog"/>
+        <File path="/home/pranav/Documents/advent-of-code-2025/day-1/verilog/src/mod100_pipelined.v" type="verilog"/>
+        <File path="/home/pranav/Documents/advent-of-code-2025/day-1/verilog/src/sol.v" type="verilog"/>
     </FileList>
     <OptionList>
         <Option type="disable_insert_pad" value="0"/>
         <Option type="global_freq" value="50.000"/>
         <Option type="looplimit" value="2000"/>
-        <Option type="output_file" value="/home/pranav/Documents/advent-of-code-2025/day-1/day1-verilog/impl/gwsynthesis/day1-verilog.vg"/>
+        <Option type="output_file" value="/home/pranav/Documents/advent-of-code-2025/day-1/verilog/impl/gwsynthesis/day1-verilog.vg"/>
         <Option type="print_all_synthesis_warning" value="0"/>
         <Option type="ram_rw_check" value="0"/>
         <Option type="vcc" value="1.2"/>

@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Module name="aoc_day1" Register="72" Alu="54" Lut="38" T_Register="117(72)" T_Alu="86(54)" T_Lut="92(38)" T_MULT36X36="1(0)" T_MULTALU36X18="1(0)" T_Ssram="8(0)">
- <SubModule name="mod_unit" Register="45" Alu="32" Lut="54" MULT36X36="1" MULTALU36X18="1" Ssram="8" T_Register="45(45)" T_Alu="32(32)" T_Lut="54(54)" T_MULT36X36="1(1)" T_MULTALU36X18="1(1)" T_Ssram="8(8)"/>
+<Module name="aoc_day1" Register="46" Alu="54" Lut="26" T_Register="91(46)" T_Alu="86(54)" T_Lut="81(26)" T_MULT36X36="1(0)" T_MULTALU36X18="1(0)" T_Ssram="8(0)">
+ <SubModule name="mod_unit" Register="45" Alu="32" Lut="55" MULT36X36="1" MULTALU36X18="1" Ssram="8" T_Register="45(45)" T_Alu="32(32)" T_Lut="55(55)" T_MULT36X36="1(1)" T_MULTALU36X18="1(1)" T_Ssram="8(8)"/>
 </Module>

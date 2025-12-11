@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module aoc_day1_tb_test();
+module aoc_day1_tb();
 
     // Instantiate DUT inputs
     reg  [31:0] data_in = 32'b0;
@@ -8,6 +8,7 @@ module aoc_day1_tb_test();
     reg         rst     = 1'b0;
     reg         dir_r   = 1'b0;
 
+    wire [7:0]  curr_pos_op;
     wire [31:0] zero_count;
 
     // Instantiate DUT
@@ -16,27 +17,27 @@ module aoc_day1_tb_test();
         .clk(clk),
         .rst(rst),
         .dir_r(dir_r),
-        .zero_count(zero_count)
+        .zero_count(zero_count),
+        .curr_pos_op(curr_pos_op)
     );
 
-    // Clock generation: 10ns period
-    always #5 clk = ~clk;
+    //Clock generation
+    initial clk = 0;
+    always #5 clk = ~clk; // 10 time units clock period
 
     initial begin
-        // VCD DUMP
-        $dumpfile("aoc_day1_test.vcd");
-        $dumpvars(0, aoc_day1_tb_test);
+        $dumpfile("aoc_day1_part1_test.vcd");
+        $dumpvars(0, aoc_day1_tb);
+        
+        @(posedge clk)
+        rst = 1;
+        data_in = 32'b0;
+        dir_r = 1'b0;
 
-        // Reset sequence
-        @(posedge clk);
-        rst     = 1;
-        data_in = 0;
-        dir_r   = 0;
-
-        @(posedge clk);
+        @(posedge clk)
         rst = 0;
 
-        // Apply test vectors
+        //Now the actual data
         @(posedge clk); dir_r = 0; data_in = 68;
         @(posedge clk); dir_r = 0; data_in = 30;
         @(posedge clk); dir_r = 1; data_in = 48;
@@ -48,10 +49,10 @@ module aoc_day1_tb_test();
         @(posedge clk); dir_r = 1; data_in = 14;
         @(posedge clk); dir_r = 0; data_in = 82;
 
-        // Allow pipeline to flush
-        repeat (10) @(posedge clk);
-
+        //Ending the simulation
+        repeat(6) @(posedge clk);
         $display("Simulation Ended. Final Zero Count = %0d", zero_count);
+
         $finish;
     end
 
