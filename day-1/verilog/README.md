@@ -28,11 +28,11 @@ From there, a final check was done to ensure that the output was wrapped around 
 ## Testbenches
 Two testbenches for the solution are present. One on the sample test that was provided in the problem statement, and one on my full input data stream.
 
-[Gtkwave Waveform of the Sample Input](./res/test_waveforms.png)
+![Gtkwave Waveform of the Sample Input](./res/test_waveforms.png)
 
 The sample is useful for opening up in gtkwave for debugging purposes. Since the testbench prints out the total zero count at the end of the simulation, you can simply use that instead.
 
-[Printout of zero count from testbench usage](./res/part1_result.png)
+![Printout of zero count from testbench usage](./res/part1_result.png)
 
 # Conversion from input to testbench
 The testbench used a simple line to convert actually send in the data, shown below:
