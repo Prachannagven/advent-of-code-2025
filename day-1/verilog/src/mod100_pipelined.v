@@ -2,7 +2,8 @@ module mod100_pipelined (
     input  wire        clk,
     input  wire        rst,
     input  wire [31:0] in_data,
-    output reg  [7:0]  rot_by 
+    output reg  [7:0]  rot_by,
+    output reg  [9:0]  quotient
 );
 
     // constant = floor(2^32 / 100) = magic number for fast division
@@ -54,9 +55,11 @@ module mod100_pipelined (
         if (rst) begin
             r_s3   <= 0;
             rot_by <= 0;
+            quotient <= 0;
         end else begin
             // compute remainder
             rot_by <= (in_s2 - (q_s2 * 32'd100)) & 32'h000000FF;
+            quotient <= q_s2[9:0];
         end
     end
 

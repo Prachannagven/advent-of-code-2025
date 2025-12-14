@@ -4,13 +4,14 @@ The verilog implementation followed the same logic as the C implementation, with
 ## IO Definitions
 The verilog module takes in a 32 bit wide "data_in" input, and returns back a 16 bit wide "zero_count" output.
 ``` Verilog
-module aoc_day1_part(
+module aoc_day1(
     input  wire [31:0] in_data,
     input  wire        clk,
     input  wire        rst,
     input  wire        dir_r,
     output reg  [31:0] zero_count,
-    output reg  [7:0]  curr_pos_op,
+    output reg  [31:0] zero_crossings,
+    output reg  [7:0]  curr_pos_op
 );
 ```
 For debugging purposes, the current position of the dial was also output. The entire system was clocked with an asynchronous reset.
@@ -34,6 +35,10 @@ The sample is useful for opening up in gtkwave for debugging purposes. Since the
 
 ![Printout of zero count from testbench usage](./res/part1_result.png)
 
+To run the simulation, go the appropriate directory and run the ```make``` command. Make sure that you're inside the testbench directory. Icarus Verilog will then compile and run the simulation. For the day 1 problem, the ouptut of the complete testbench (i.e. my problem statement) is shown below:
+
+![Day 1 Solution Output of Testbench](./res/part2_result.png)
+
 # Conversion from input to testbench
 The testbench used a simple line to convert actually send in the data, shown below:
 ``` Verilog
@@ -52,4 +57,5 @@ The testbench used a simple line to convert actually send in the data, shown bel
 Which simply contains the direction right or left as well as the data input in decimal format. To generate these lines, I wrote a simple C script that scrapes the input file and generates these lines.
 
 The output was piped into a .txt file which was then copied over into the testbench.
+
 

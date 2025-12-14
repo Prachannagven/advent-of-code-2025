@@ -8,7 +8,7 @@ module I = struct
         clk     : 'a;
         rst     : 'a;
         dir_r   : 'a;
-        in_data : 'a [@bits 32];
+        in_data : 'a [@bits 32]
     }
     [@@deriving hardcaml]
 end
@@ -17,12 +17,14 @@ module O = struct
     type 'a t = {
         zero_count  : 'a [@bits 32];
         curr_pos_op : 'a [@bits 8];
+        dir_r_reg   : 'a [@bits 5];
     }
     [@@deriving hardcaml]
 end
 
 let create (i : _ I.t) : _ O.t =
     let spec = Reg_spec.create ~clock:i.clk ~clear:i.rst () in
+    let spec_with_reset = Reg_spec.create ~clock:i.clk ~reset:i.rst () in
         
     (* We instantiate the module first, only inputs, then output *)
     let mod100_out = Mod100.create{
@@ -42,7 +44,7 @@ let create (i : _ I.t) : _ O.t =
 
     (* curr_pos and next_pos implementation *)
     (* initially setting current position to 50 *)
-    let curr_pos = reg_fb spec ~width:8 ~f:(fun out ->
+    let curr_pos = reg_fb spec_with_reset ~width:8 ~reset_to:(Bits.of_int_trunc ~width:8 50) ~initialize_to:(Bits.of_int_trunc ~width:8 50) ~f:(fun out ->
             (* Precompute both forward and backward rotation *)
             let rot_forward = out +: rot_by in
             let rot_backward = out -: rot_by +: (of_int_trunc ~width:8 100) in
@@ -64,7 +66,7 @@ let create (i : _ I.t) : _ O.t =
         )
     in
 
-    {O.curr_pos_op; zero_count}
+    {O.curr_pos_op; zero_count; dir_r_reg}
 ;;
     
         

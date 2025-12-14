@@ -92,6 +92,7 @@ int main(int argc, char **argv){
 	fclose(fp);
 
 	printf("Number of Zero Crosses is %d \n", zero_cross);
+	printf("Final position is : %d \n", pos_init);
 	printf("Number of Zeroes is %ld \n", zero_count);
 	printf("Solution of Zero Cross in part 2 is %ld \n", zero_count+zero_cross);
 	return 0;

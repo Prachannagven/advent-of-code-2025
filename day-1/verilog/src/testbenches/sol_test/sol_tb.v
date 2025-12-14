@@ -10,15 +10,17 @@ module aoc_day1_tb();
 
     wire [7:0]  curr_pos_op;
     wire [31:0] zero_count;
+    wire [31:0] zero_crossings;
 
     // Instantiate DUT
-    aoc_day1 uut (
+    aoc_day1 sol_module (
         .in_data(data_in),
         .clk(clk),
         .rst(rst),
         .dir_r(dir_r),
         .zero_count(zero_count),
-        .curr_pos_op(curr_pos_op)
+        .curr_pos_op(curr_pos_op),
+        .zero_crossings(zero_crossings)
     );
 
     //Clock generation
@@ -26,7 +28,7 @@ module aoc_day1_tb();
     always #5 clk = ~clk; // 10 time units clock period
 
     initial begin
-        $dumpfile("aoc_day1_part1.vcd");
+        $dumpfile("sol_tb.vcd");
         $dumpvars(0, aoc_day1_tb);
         
         @(posedge clk)
@@ -4215,10 +4217,13 @@ module aoc_day1_tb();
         @(posedge clk); dir_r = 1; data_in = 29;
         @(posedge clk); dir_r = 1; data_in = 47;
         @(posedge clk); dir_r = 0; data_in = 34;
+        @(posedge clk); dir_r = 0; data_in = 0;
 
         //Ending the simulation
-        repeat(6) @(posedge clk);
-        $display("Simulation Ended. Final Zero Count = %0d", zero_count);
+        repeat(100) @(posedge clk);
+        $display("Simulation Ended. Final Position = %0d", curr_pos_op);
+        $display("Part 1 Solution : %0d", zero_count);
+        $display("Part 2 Solution : %0d", zero_count + zero_crossings);
 
         $finish;
     end

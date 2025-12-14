@@ -44,7 +44,7 @@ module hardware_wrapper #(parameter INPUT_WIDTH=4)
     wire [31:0] zero_count;
     wire [7:0] curr_pos;
 
-    aoc_day1_part1 top_module(
+    aoc_day1 top_module(
         .in_data(in_data_reg),
         .clk(int_clk),
         .rst(rst),
