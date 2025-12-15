@@ -13,7 +13,7 @@ module aoc_day1_tb();
     wire [31:0] zero_crossings;
 
     // Instantiate DUT
-    aoc_day1 sol_module (
+    aoc_day1_part1 sol_module (
         .in_data(data_in),
         .clk(clk),
         .rst(rst),

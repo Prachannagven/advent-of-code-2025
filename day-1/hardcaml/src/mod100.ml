@@ -41,7 +41,6 @@ let create (i : _ I.t) : _ O.t =
     let in_s2   = reg spec in_s1 in
 
     (* Stage 3 - Compute remainder: input - quotient*100 *)
-    (*let prod_s3 = q_s2 *: hundred in  *)
     let r_s3    = reg spec (sel_bottom ~width:32 (uresize ~width:64 in_s2 -: (q_s2 *: hundred))) in
 
     { O.rot_by = (sel_bottom ~width:8 r_s3)}

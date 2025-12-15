@@ -1,7 +1,8 @@
--d /home/pranav/Documents/advent-of-code-2025/day-1/day1-verilog/impl/gwsynthesis/day1-verilog.vg
+-d /home/pranav/Documents/advent-of-code-2025/day-1/verilog/impl/gwsynthesis/day1-verilog.vg
 -p GW1NR-9C-QFN88P-6
 -pn GW1NR-LV9QN88PC6/I5
--cfg /home/pranav/Documents/advent-of-code-2025/day-1/day1-verilog/impl/pnr/device.cfg
+-cst /home/pranav/Documents/advent-of-code-2025/day-1/verilog/src/day1-verilog.cst
+-cfg /home/pranav/Documents/advent-of-code-2025/day-1/verilog/impl/pnr/device.cfg
 -bit
 -tr
 -ph

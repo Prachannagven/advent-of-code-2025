@@ -28,20 +28,18 @@ module aoc_day1(
     reg [8:0] next_pos_raw;
     reg [3:0] dir_r_reg;
 
-    reg [31:0] test_reg;
     reg zero_crossing_detected = 1'b0;
     reg [11:0] count_cycles= 1'b0;
 
     //Latency of 4 clock cycles exists because of the mod100 pipeline.
     //Dir_r needs to be delayed the same amount to line up correctly.
     always @(posedge clk or posedge rst) begin
-        test_reg <= in_data;
         if (rst) begin
             dir_r_reg <= 5'b0;
         end
         else begin
-            dir_r_reg <= {dir_r_reg[3:0], dir_r};
-            count_cycles <= count_cycles + 1;
+            dir_r_reg <= {dir_r_reg[2:0], dir_r};
+            count_cycles <= count_cycles + 1'b1;
         end
     end
 
@@ -79,7 +77,6 @@ module aoc_day1(
             curr_pos    <= 8'd50;
             zero_count  <= 0;
             curr_pos_op <= 8'd50;
-            zero_crossing_detected <= 1'b0;
             zero_crossings <= 0;
         end
         else begin

@@ -5,8 +5,9 @@ module hardware_wrapper #(parameter INPUT_WIDTH=4)
     input wire [INPUT_WIDTH-1:0]    data_in, 
     input wire                      dir_r,    
     output reg [3:0]                data_out,
-    output reg                      input_rec,
-    output reg                      sending_output
+    output reg                      sending_output,
+    output reg [3:0]                count,
+    output reg                      clk_out
 );
     //Register to store the 8 bit inputs as 32 bits
     reg [31:0] in_data_reg = 32'b0;
@@ -15,7 +16,7 @@ module hardware_wrapper #(parameter INPUT_WIDTH=4)
     //We make a internal clock due to data in delay
     localparam CLK_COUNT = 4'b0100; // 8 clock cycles
     reg int_clk = 1'b0;
-    reg [3:0] count = 3'b0;
+    //reg [3:0] count = 3'b0;
 
     always @(posedge sys_clk or posedge rst) begin
         if(rst) begin
@@ -42,6 +43,7 @@ module hardware_wrapper #(parameter INPUT_WIDTH=4)
 
     //Instantiate the top module that we made
     wire [31:0] zero_count;
+    wire [31:0] zero_cross;
     wire [7:0] curr_pos;
 
     aoc_day1 top_module(
@@ -50,13 +52,14 @@ module hardware_wrapper #(parameter INPUT_WIDTH=4)
         .rst(rst),
         .dir_r(dir_r_reg),
         .zero_count(zero_count),
+        .zero_crossings(zero_cross),
         .curr_pos_op(curr_pos)
     );
 
     //Output logic
     reg [3:0] count_op = 4'b0;
     reg [31:0] data_out_reg = 32'b0;
-    always @(posedge sys_clk or negedge rst) begin
+    always @(posedge sys_clk or posedge rst) begin
         if(rst) begin
             data_out <= 4'b0;
         end
@@ -66,12 +69,14 @@ module hardware_wrapper #(parameter INPUT_WIDTH=4)
                 data_out <= zero_count[31:28];
                 data_out_reg <= zero_count;
                 sending_output <= 1'b1;
+                clk_out <= int_clk;
             end
             else begin
                 count_op <= count_op + 1'b1;
                 data_out <= data_out_reg[31:28];
                 data_out_reg <= {data_out_reg[27:0], 4'b0};
                 sending_output <= 1'b0;
+                clk_out <= int_clk;
             end
         end
     end

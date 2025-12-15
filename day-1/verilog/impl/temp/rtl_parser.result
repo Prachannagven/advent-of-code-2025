@@ -9,15 +9,15 @@
   "SubInsts" : [
    {
     "InstFile" : "/home/pranav/Documents/advent-of-code-2025/day-1/verilog/src/hardware_wrapper.v",
-    "InstLine" : 43,
+    "InstLine" : 49,
     "InstName" : "top_module",
     "ModuleFile" : "/home/pranav/Documents/advent-of-code-2025/day-1/verilog/src/sol.v",
     "ModuleLine" : 1,
-    "ModuleName" : "aoc_day1_part1",
+    "ModuleName" : "aoc_day1",
     "SubInsts" : [
      {
       "InstFile" : "/home/pranav/Documents/advent-of-code-2025/day-1/verilog/src/sol.v",
-      "InstLine" : 14,
+      "InstLine" : 16,
       "InstName" : "mod_unit",
       "ModuleFile" : "/home/pranav/Documents/advent-of-code-2025/day-1/verilog/src/mod100_pipelined.v",
       "ModuleLine" : 1,

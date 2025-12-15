@@ -8,5 +8,6 @@
         <File path="src/hardware_wrapper.v" type="file.verilog" enable="1"/>
         <File path="src/mod100_pipelined.v" type="file.verilog" enable="1"/>
         <File path="src/sol.v" type="file.verilog" enable="1"/>
+        <File path="src/day1-verilog.cst" type="file.cst" enable="1"/>
     </FileList>
 </Project>
