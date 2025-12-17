@@ -7,9 +7,13 @@ Another issue was the input stream. I've taken the stream to up to 32 bits wide,
 Most of the logic remains the same as that of the C program, but with a few changes to accomodate the parallel nature of hardware.
 
 ## Modulo Module
-## FIFO Module
+Magic modulo modulus operation that runs in 3 cycles (4 if you count input registering). This module is heavily pipelined to ensure timing requirements are met. It's also incredibly simple, and pretty hardware efficient for my use case.
+
 ## Main Core
+Actually does the counting of zeroes and zero crossing using a pretty simple set of if statements. It's obviously written differently in each language (C, Verilog, Hardcaml), but the logic remains the same.
+
 ## Top Level Wrapper
+This is only applicable to verilog and hardcaml, as the goal was to try to implement it on an FPGA. So I added a hardware wrapper to break up the input and output streams that could be sent over the limited number of pins on my FPGA board. More details in the verilog folder.
 
 # Folders
 The challenge was implemented in three languages:
