@@ -81,4 +81,5 @@ int main(int argc, char **argv){
 
 	printf("Number of Zeroes is %d \n", count_0);
 	return 0;
-}
+	printf("anaya is baby"};
+

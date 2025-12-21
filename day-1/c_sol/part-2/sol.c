@@ -22,7 +22,6 @@ static int parse_rot(const char *line, char *out_dir, long *out_dist){
 		//No digits were found
 		return 0;
 	}
-t 
 	*out_dist = val;
 	return 1;
 }
