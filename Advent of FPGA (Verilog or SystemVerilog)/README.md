@@ -1,4 +1,77 @@
-# Goals
+# Advent of Code 2025 - FPGA Solutions (Verilog/SystemVerilog)
+
+Hardware implementations for Advent of Code 2025 using **Verilog** and **SystemVerilog**. These solutions are designed to be synthesizable and runnable on actual FPGA hardware.
+
+## Structure
+
+```
+day-1/                    # Verilog implementation
+├── src/                  # Source files
+│   ├── sol.v            # Main solution module
+│   ├── mod100_pipelined.v
+│   ├── hardware_wrapper.v
+│   └── testbenches/     # Simulation testbenches
+├── impl/                # FPGA implementation files (Gowin)
+├── res/                 # Resources (waveform screenshots, etc.)
+└── README.md
+
+day-3/                    # SystemVerilog implementation
+├── src/
+│   ├── sol.sv           # Main solution
+│   └── pipelined_sol.sv # Experimental pipelined version
+├── sim/
+│   └── tb_sol_streaming.sv
+├── Makefile
+└── README.md
+```
+
+## Completed Days
+
+| Day | Language      | Status | Description |
+|:---:|:-------------:|:------:|-------------|
+| 1   | Verilog       | ✅     | Position tracking with pipelined mod-100 |
+| 2   | -             | ❌     | Not implemented (CPU better suited) |
+| 3   | SystemVerilog | ✅     | Monotonic stack for largest subsequence |
+
+## Target Hardware
+
+**SiSpeed Tang Nano 9k**
+- FPGA: Gowin GW1NSR-4C4C6N144I
+- LUTs: 8640
+- Flip-Flops: 6480
+- Max Frequency: 27MHz
+- Pins: 48
+
+## Building & Running
+
+### Simulation (Icarus Verilog)
+```bash
+cd day-X/
+make          # Compile and run simulation
+make clean    # Remove generated files
+make view     # Open waveforms in GTKWave
+```
+
+### FPGA Synthesis (Gowin)
+Day 1 includes Gowin project files for synthesis on Tang Nano 9k.
+
+## Design Highlights
+
+### Day 1 - Pipelined Mod-100
+The lack of a synthesizable modulo operator led to a custom pipelined mod-100 module using magic constant multiplication. 4-cycle latency with full throughput.
+
+### Day 3 - Monotonic Stack
+Implements a hardware monotonic stack with state machine for finding the lexicographically largest k-digit subsequence.
+
+## Dependencies
+
+- **Icarus Verilog** - For simulation (`iverilog`)
+- **GTKWave** - For waveform viewing
+- **Gowin IDE** - For FPGA synthesis (optional)
+
+---
+
+## Original Goals Section
 The day 1 challenge was basically a challenge to track position. In C, python, or otherwise of course, this is quite easy. In an RTL however, this becomes a more interesting challenge.
 Without a doubt, the biggest issue is the lack of a modulo operator, meaning that we can't just wrap around the data when we hit the 100 mark. Instead, a custom modulo module had to be made. In addition to this, to satisfy timing requirements, a FIFO was required at the hardware input side.
 Another issue was the input stream. I've taken the stream to up to 32 bits wide, allowing large data to be entered. However, my hardware obviously doesn't support that. As such, I've added a hardware wrapper to go around my main core that satisifies my pin requirements.
