@@ -1,0 +1,12 @@
+(library
+ (name test_aoc_day3)
+ (libraries
+  aoc_day3_lib
+  hardcaml
+  core)
+ (preprocess 
+   (pps ppx_hardcaml ppx_jane)
+   )
+ (inline_tests)
+ )
+

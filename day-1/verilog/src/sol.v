@@ -22,7 +22,6 @@ module aoc_day1(
     );
 
     //To make this work, we need the current and next for arithmatic.
-    //The next will then be assigned out to the output
     reg [7:0] curr_pos = 8'd50;
     reg [7:0] next_pos;
     reg [8:0] next_pos_raw;

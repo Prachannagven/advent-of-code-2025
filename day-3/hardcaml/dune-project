@@ -1,0 +1,4 @@
+(lang dune 3.9)
+(name aoc_day3)
+(generate_opam_files true)
+

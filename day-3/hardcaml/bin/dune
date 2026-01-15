@@ -1,0 +1,13 @@
+(executables
+ (modes byte exe)
+ (names generate)
+ (libraries 
+   core.command 
+   core_unix.command_unix 
+   core 
+   core_unix 
+   hardcaml
+   aoc_day3_lib)
+ (preprocess
+  (pps ppx_jane)))
+
